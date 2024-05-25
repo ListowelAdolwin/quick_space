@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { products } from "../data/products";
+import { Link } from "react-router-dom";
 
 const FeaturedProductsCarousel = () => {
 	const [currentIndex, setCurrentIndex] = useState(0);
@@ -49,7 +50,8 @@ const FeaturedProductsCarousel = () => {
 					}}
 				>
 					{products.map((product, index) => (
-						<div
+						<Link
+            to={`/product/${product.id}`}
 							key={index}
 							className="w-full p-4 flex-shrink-0"
 							style={{ flex: `0 0 ${100 / itemsPerView}%` }}
@@ -67,7 +69,7 @@ const FeaturedProductsCarousel = () => {
 									${product.price}
 								</p>
 							</div>
-						</div>
+						</Link>
 					))}
 				</div>
 			</div>

@@ -4,10 +4,12 @@ import { Link } from "react-router-dom";
 import { FaRegHeart, FaRegUserCircle } from "react-icons/fa";
 import logo_desktop from "../assets/logo_desktop.png";
 import logo_mobile from "../assets/logo_mobile.png";
+import {useSelector} from "react-redux"
 
 const Header = () => {
 	const [isOpen, setIsOpen] = useState(false);
-	const [isLoggedIn, setIsLoggedIn] = useState(true);
+
+	const { currentUser } = useSelector((state) => state.user);
 
 	return (
 		<nav className="bg-white shadow-md">
@@ -64,7 +66,7 @@ const Header = () => {
 							>
 								About
 							</Link>
-							{isLoggedIn ? (
+							{currentUser ? (
 								<div>
 									<Link
 										to="/add-product"
@@ -191,7 +193,7 @@ const Header = () => {
 					>
 						Contact
 					</Link>
-					{isLoggedIn ? (
+					{currentUser ? (
 						<div>
 							<Link
 								to="/favourites"
@@ -212,7 +214,7 @@ const Header = () => {
 								/>
 							</Link>
 							<Link
-								to="/profile"
+								to="/profile/1"
 								className="text-gray-800 hover:text-gray-600 block px-3 py-2 rounded-md text-base font-medium"
 							>
 								<FaRegUserCircle

@@ -1,3 +1,7 @@
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logoutUser } from "../redux/features/user/userSlice";
+
 const UserProfile = () => {
 	// Dummy data for user and products
 	const user = {
@@ -29,6 +33,14 @@ const UserProfile = () => {
 		},
 	];
 
+	const dispatch = useDispatch()
+	const navigate = useNavigate()
+
+	const logout = async () => {
+			dispatch(logoutUser());
+			navigate("/");
+	};
+
 	return (
 		<div className="flex flex-col min-h-screen">
 			<main className="flex-grow">
@@ -37,23 +49,28 @@ const UserProfile = () => {
 						User Profile
 					</h1>
 					<div className="flex flex-wrap items-start justify-between gap-5 bg-white p-6 rounded-lg shadow-md">
-						<div className="basis-3/12 flex flex-col gap-4 space-x-6 text-start">
-								<h2 className="text-2xl font-semibold text-gray-800">
-									{user.name}
-								</h2>
-								<p className="text-gray-600">{user.email}</p>
-								<p className="text-gray-600">{user.phone}</p>
-								<p className="text-gray-600">
-									School: {user.school}
-								</p>
+						<div className="lg:basis-3/12 flex flex-col gap-4 text-start">
+							<p className="text-2xl font-semibold text-gray-800">
+								{user.name}
+							</p>
+							<p className="text-gray-600">{user.email}</p>
+							<p className="text-gray-600">{user.phone}</p>
+							<p className="text-gray-600">
+								School: {user.school}
+							</p>
+							<div className="flex gap-2">
+								<button onClick={logout} className="mt-4 bg-red-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+									Logout
+								</button>
 								<button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
 									Update Profile
 								</button>
+							</div>
 						</div>
 
-						<div className="basis-8/12">
+						<div className="lg:basis-8/12">
 							<h2 className="text-2xl font-semibold text-gray-800 mb-4">
-								Products Posted
+								Catalogue
 							</h2>
 							<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
 								{postedProducts.map((product) => (
