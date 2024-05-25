@@ -17,10 +17,9 @@ function App() {
 		<>
 			<BrowserRouter>
 				<Header />
-
 				<Routes>
 					<Route exact path="/" element={<Home />} />
-					<Route path="/Home" element={<Home />} />
+					<Route path="/home" element={<Home />} />
 					<Route path="/shop" element={<Shop />} />
 					<Route path="/favourites" element={<Favourites />} />
 					<Route path="/about" element={<About />} />

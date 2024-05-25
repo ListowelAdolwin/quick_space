@@ -1,25 +1,25 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { products } from "../data/products";
 import { Link } from "react-router-dom";
 
 const FeaturedProductsCarousel = () => {
 	const [currentIndex, setCurrentIndex] = useState(0);
-	const [itemsPerView, setItemsPerView] = useState(1); // Default to 1 for mobile
+	const [itemsPerView, setItemsPerView] = useState(1);
 
 	useEffect(() => {
 		const handleResize = () => {
 			if (window.innerWidth >= 1024) {
-				setItemsPerView(6); // Desktop view
+				setItemsPerView(6);
 			} else if (window.innerWidth >= 768) {
-				setItemsPerView(5); // Medium view
+				setItemsPerView(5);
 			} else {
-				setItemsPerView(3); // Mobile view
+				setItemsPerView(3);
 			}
 		};
 
 		window.addEventListener("resize", handleResize);
-		handleResize(); // Initial check
+		handleResize();
 
 		return () => window.removeEventListener("resize", handleResize);
 	}, []);
