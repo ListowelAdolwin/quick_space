@@ -57,8 +57,6 @@ const Register = () => {
 				userPayload
 			);
 			if (response.status === 201) {
-				const data = response.data;
-				localStorage.setItem("currentUser", JSON.stringify(data));
 				navigate("/login");
 			} else {
 				setErrorMessage(response.data.message);

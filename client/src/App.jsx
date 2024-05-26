@@ -11,6 +11,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import CategoryItems from "./pages/CategoryItems";
 import AddProduct from "./pages/AddProduct";
+import UpdateProfile from "./pages/UpdateProfile";
 
 function App() {
 	return (
@@ -26,6 +27,7 @@ function App() {
 					<Route path="/register" element={<Register />} />
 					<Route path="/login" element={<Login />} />
 					<Route path="/profile/:id" element={<UserProfile />} />
+					<Route path="/update-profile/:id" element={<UpdateProfile />} />
 					<Route path="/product/:id" element={<ProductDetail />} />
 					<Route path="/add-product" element={<AddProduct />} />
 					<Route

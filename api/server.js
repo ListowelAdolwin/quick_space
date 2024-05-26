@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import cors from 'cors'
 import connectDB from "./config/db.js";
 import userRoutes from './routes/userRoutes.js'
+import authRoutes from './routes/authRoutes.js'
 import productRoutes from './routes/productRoutes.js'
 
 dotenv.config();
@@ -23,14 +24,11 @@ app.use(
 	}),
 );
 
-app.use('/api/auth', userRoutes)
+app.use('/api/auth', authRoutes)
+app.use('/api/users', userRoutes)
 app.use('/api/products', productRoutes)
 
 connectDB()
-
-app.use("/", (req, res, next) => {
-  res.send({message: "Success!"})
-})
 
 app.listen(3000, () => {
   console.log("App started!")

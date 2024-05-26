@@ -1,14 +1,31 @@
 import { CiViewList } from "react-icons/ci";
 import { FiHeart } from "react-icons/fi";
 import { Link, useParams } from "react-router-dom";
-import { products } from "../data/products";
+//import { products } from "../data/products";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const CategoryItems = () => {
-  const params = useParams()
-  const category = params.category
-  const filteredProducts = products.filter(
-		(item) => item.category === category
-  );
+	const [products, setProducts] = useState([])
+	const params = useParams();
+	const category = params.category;
+
+	useEffect(() => {
+		const getCategoryProducts = async () => {
+			const response = await axios.get(
+				`http://localhost:3000/api/products/category/${category}`
+			);
+			if (response.status === 200) {
+				setProducts(response.data);
+				console.log("Category response: ", response);
+			} else {
+				console.log("Category response: ", response);
+			}
+		};
+
+		getCategoryProducts();
+	}, []);
+
 	return (
 		<div className="flex flex-col min-h-screen">
 			<main className="flex-grow">
@@ -16,27 +33,29 @@ const CategoryItems = () => {
 					<h1 className="text-3xl font-bold text-gray-800 mb-4">
 						Shop
 					</h1>
-					{filteredProducts.length === 0 && (
-						<div className="text-2xl">No items found under this category </div>
+					{products.length === 0 && (
+						<div className="text-2xl">
+							No items found under this category{" "}
+						</div>
 					)}
 					<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-						{filteredProducts.map((product) => (
+						{products.map((product) => (
 							<Link
-								to={`/product/${product.id}`}
-								key={product.id}
+								to={`/product/${product._id}`}
+								key={product._id}
 								className="bg-white rounded-lg overflow-hidden shadow-md"
 							>
 								<img
-									src={product.image}
+									src={product.imageUrls[0]}
 									alt={product.name}
-									className="w-full h-56 object-cover object-center"
+									className="w-full h-44 pt-2 object-contain object-center"
 								/>
 								<div className="p-4">
 									<h2 className="text-xl font-semibold text-gray-800">
 										{product.name}
 									</h2>
 									<p className="text-gray-600 mt-2">
-										{product.price}
+										₵{product.price}
 									</p>
 									<div className="flex items-center mt-6 space-x-4">
 										<button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center">

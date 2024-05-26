@@ -1,9 +1,12 @@
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { logoutUser } from "../redux/features/user/userSlice";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const UserProfile = () => {
-	// Dummy data for user and products
+	const [userData, setUserData] = useState(null);
+
 	const user = {
 		name: "John Doe",
 		email: "john.doe@example.com",
@@ -33,12 +36,37 @@ const UserProfile = () => {
 		},
 	];
 
-	const dispatch = useDispatch()
-	const navigate = useNavigate()
+	const { currentUser } = useSelector((state) => state.user);
+
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+	const params = useParams();
+	const id = params.id;
+
+	useEffect(() => {
+		const getUserProfile = async () => {
+			const response = await axios.get(
+				`http://localhost:3000/api/users/profile/${id}`,
+				{
+					headers: {
+						Authorization: `Bearer ${currentUser?.accessToken}`,
+					},
+				}
+			);
+			if (response.status === 200) {
+				setUserData(response.data);
+				console.log("Profile response: ", response.data);
+			} else {
+				console.log("Profile response: ", response.data);
+			}
+		};
+
+		getUserProfile();
+	}, []);
 
 	const logout = async () => {
-			dispatch(logoutUser());
-			navigate("/");
+		dispatch(logoutUser());
+		navigate("/");
 	};
 
 	return (
@@ -48,54 +76,61 @@ const UserProfile = () => {
 					<h1 className="text-3xl font-bold text-gray-800 mb-4">
 						User Profile
 					</h1>
-					<div className="flex flex-wrap items-start justify-between gap-5 bg-white p-6 rounded-lg shadow-md">
-						<div className="lg:basis-3/12 flex flex-col gap-4 text-start">
-							<p className="text-2xl font-semibold text-gray-800">
-								{user.name}
-							</p>
-							<p className="text-gray-600">{user.email}</p>
-							<p className="text-gray-600">{user.phone}</p>
-							<p className="text-gray-600">
-								School: {user.school}
-							</p>
-							<div className="flex gap-2">
-								<button onClick={logout} className="mt-4 bg-red-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-									Logout
-								</button>
-								<button className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-									Update Profile
-								</button>
-							</div>
-						</div>
-
-						<div className="lg:basis-8/12">
-							<h2 className="text-2xl font-semibold text-gray-800 mb-4">
-								Catalogue
-							</h2>
-							<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
-								{postedProducts.map((product) => (
-									<div
-										key={product.id}
-										className="bg-gray-100 p-4 rounded-lg shadow-md"
+					{userData && (
+						<div className="flex flex-wrap items-start justify-between gap-5 bg-white p-6 rounded-lg shadow-md">
+							<div className="lg:basis-3/12 flex flex-col gap-4 text-start">
+								<p className="text-2xl font-semibold text-gray-800">
+									{userData.username}
+								</p>
+								<p className="text-gray-600">
+									{userData.email}
+								</p>
+								<p className="text-gray-600">{user.phone}</p>
+								<p className="text-gray-600">
+									School: {user.school}
+								</p>
+								<div className="flex gap-2">
+									<button
+										onClick={logout}
+										className="mt-4 bg-red-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
 									>
-										<img
-											src={product.image}
-											alt={product.name}
-											className="w-full h-56 object-cover object-center"
-										/>
-										<div className="mt-4">
-											<h3 className="text-xl font-semibold text-gray-800">
-												{product.name}
-											</h3>
-											<p className="text-gray-600 mt-2">
-												{product.price}
-											</p>
+										Logout
+									</button>
+									<Link to={`/update-profile/${userData._id}`} className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+										Update Profile
+									</Link>
+								</div>
+							</div>
+
+							<div className="lg:basis-8/12">
+								<h2 className="text-2xl font-semibold text-gray-800 mb-4">
+									Catalogue
+								</h2>
+								<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
+									{postedProducts.map((product) => (
+										<div
+											key={product.id}
+											className="bg-gray-100 p-4 rounded-lg shadow-md"
+										>
+											<img
+												src={product.image}
+												alt={product.name}
+												className="w-full h-56 object-cover object-center"
+											/>
+											<div className="mt-4">
+												<h3 className="text-xl font-semibold text-gray-800">
+													{product.name}
+												</h3>
+												<p className="text-gray-600 mt-2">
+													{product.price}
+												</p>
+											</div>
 										</div>
-									</div>
-								))}
+									))}
+								</div>
 							</div>
 						</div>
-					</div>
+					)}
 				</div>
 			</main>
 		</div>

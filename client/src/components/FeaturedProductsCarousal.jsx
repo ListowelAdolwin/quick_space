@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { products } from "../data/products";
+//import { products } from "../data/products";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const FeaturedProductsCarousel = () => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [itemsPerView, setItemsPerView] = useState(1);
+	const [products, setProducts] = useState([]);
 
 	useEffect(() => {
 		const handleResize = () => {
 			if (window.innerWidth >= 1024) {
-				setItemsPerView(6);
+				setItemsPerView(7);
 			} else if (window.innerWidth >= 768) {
 				setItemsPerView(5);
 			} else {
@@ -22,6 +24,22 @@ const FeaturedProductsCarousel = () => {
 		handleResize();
 
 		return () => window.removeEventListener("resize", handleResize);
+	}, []);
+
+	useEffect(() => {
+		const getFeaturedProducts = async () => {
+			const response = await axios.get(
+				"http://localhost:3000/api/products/featured"
+			);
+			if (response.status === 200) {
+				setProducts(response.data);
+				console.log("Featured response: ", response);
+			} else {
+				console.log("Featured response: ", response)
+			}
+		};
+
+		getFeaturedProducts();
 	}, []);
 
 	const handleNext = () => {
@@ -46,27 +64,27 @@ const FeaturedProductsCarousel = () => {
 						transform: `translateX(-${
 							(currentIndex * 100) / itemsPerView
 						}%)`,
-						width: `${100 * (products.length / itemsPerView)}%`,
+						width: `${100 * (10 / itemsPerView)}%`,
 					}}
 				>
 					{products.map((product, index) => (
 						<Link
-            to={`/product/${product.id}`}
+							to={`/product/${product._id}`}
 							key={index}
 							className="w-full p-4 flex-shrink-0"
 							style={{ flex: `0 0 ${100 / itemsPerView}%` }}
 						>
 							<div className="bg-white p-6 rounded-lg shadow-md">
 								<img
-									src={product.image}
+									src={product.imageUrls[0]}
 									alt={product.name}
-									className="w-full h-40 object-cover mb-4"
+									className="w-full h-40 object-contain mb-4"
 								/>
 								<h2 className="text-lg font-semibold line-clamp-1">
 									{product.name}
 								</h2>
 								<p className="text-gray-600">
-									${product.price}
+									₵{product.price}
 								</p>
 							</div>
 						</Link>

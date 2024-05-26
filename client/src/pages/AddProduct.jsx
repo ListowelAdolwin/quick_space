@@ -71,46 +71,45 @@ const AddProduct = () => {
 			const urls = await axios.all(uploaders);
 
 			setFormData({ ...formData, imageUrls: urls });
-			console.log("Donnnee:, ", urls);
+
+			const productData = {
+				name: formData.itemName,
+				price: formData.price,
+				category: formData.category,
+				imageUrls: urls,
+				vendor: currentUser._id,
+			};
+
+			const saveProductResponse = await axios.post(
+				"http://localhost:3000/api/products/add",
+				productData,
+				{
+					headers: {
+						Authorization: `Bearer ${currentUser?.accessToken}`,
+					},
+				}
+			);
+			if (saveProductResponse.status === 201) {
+				if (redirect) {
+					navigate(`/profile/${currentUser._id}`);
+				} else {
+					setFormData({
+						itemName: "",
+						price: "",
+						category: "",
+						images: [],
+						imageUrls: [],
+					});
+				}
+			} else {
+				setErrowMessage(saveProductResponse.message);
+			}
+			setIsLoading(false);
+			console.log("Product saved:", saveProductResponse.data);
 		} catch (error) {
 			setErrowMessage("Error uploading images. Please retry");
 			console.error("Error uploading images:", error);
 		}
-
-		const productData = {
-			name: formData.itemName,
-			price: formData.price,
-			category: formData.category,
-			imageUrls: formData.imageUrls,
-			vendor: currentUser._id,
-		};
-
-		const saveProductResponse = await axios.post(
-			"http://localhost:3000/api/products/add", // Your backend endpoint
-			productData,
-			{
-				headers: {
-					Authorization: `Bearer ${currentUser?.accessToken}`,
-				},
-			}
-		);
-		if (saveProductResponse.status === 201) {
-			if (redirect) {
-				navigate(`/profile/${currentUser._id}`);
-			} else {
-				setFormData({
-					itemName: "",
-					price: "",
-					category: "",
-					images: [],
-					imageUrls: [],
-				});
-			}
-		} else {
-			setErrowMessage(saveProductResponse.message);
-		}
-		setIsLoading(false);
-		console.log("Product saved:", saveProductResponse.data);
 	};
 
 	return (
